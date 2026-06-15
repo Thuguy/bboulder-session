@@ -116,35 +116,34 @@ window.selectionnerParticipant = async (userId) => {
         card.className = "card bloc-card";
 
         let html = `
-      <div class="bloc-header">
-        <span class="bloc-name">BLOC ${i}</span>
-      </div>
-      <div class="bloc-saisie-row">
-        <div class="counter">
-          <span class="label">ESSAIS</span>
-          <button type="button" onclick="changeAttemptsJuge(${i}, -1)">-</button>
-          <span id="attempts-${i}">${essais}</span>
-          <button type="button" onclick="changeAttemptsJuge(${i}, +1)">+</button>
-        </div>
-        ${phaseActuelle !== "qualifs" ? `
-        <div class="toggle-group">
-          <span class="label">ZONE</span>
-          <label class="toggle">
-            <input type="checkbox" id="zone-${i}" ${zone} onchange="majScoreJuge()"/>
-            <span class="slider"></span>
-          </label>
-        </div>
-        ` : ""}
-        <div class="toggle-group">
-          <span class="label">TOP</span>
-          <label class="toggle">
-            <input type="checkbox" id="top-${i}" ${top} onchange="majScoreJuge()"/>
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-    `;
-
+  <div class="bloc-header">
+    <span class="bloc-name">BLOC ${i}</span>
+  </div>
+  <div class="bloc-saisie-row">
+    ${phaseActuelle !== "qualifs" ? `
+    <div class="toggle-group">
+      <span class="label">ZONE</span>
+      <label class="toggle">
+        <input type="checkbox" id="zone-${i}" ${zone} onchange="majScoreJuge()"/>
+        <span class="slider"></span>
+      </label>
+    </div>
+    ` : ""}
+    <div class="toggle-group">
+      <span class="label">TOP</span>
+      <label class="toggle">
+        <input type="checkbox" id="top-${i}" ${top} onchange="majScoreJuge()"/>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="counter">
+      <span class="label">ESSAIS</span>
+      <button type="button" onclick="changeAttemptsJuge(${i}, -1)">-</button>
+      <span id="attempts-${i}">${bloc?.essais ?? 0}</span>
+      <button type="button" onclick="changeAttemptsJuge(${i}, +1)">+</button>
+    </div>
+  </div>
+`;
         card.innerHTML = html;
         container.appendChild(card);
     }
@@ -155,7 +154,7 @@ window.selectionnerParticipant = async (userId) => {
 
 window.changeAttemptsJuge = (id, delta) => {
     const el = document.getElementById(`attempts-${id}`);
-    const next = Math.max(1, parseInt(el.textContent) + delta);
+    const next = Math.max(0, parseInt(el.textContent) + delta);
     el.textContent = next;
     majScoreJuge();
 };
@@ -217,64 +216,6 @@ window.validerScore = async () => {
                 blocs,
                 totalTops,
                 totalZones,
-                totalEssais,
-                score: parseFloat(score.toFixed(1)),
-                submitted: true,
-                jugeId: user.id,
-                timestamp: serverTimestamp()
-            }
-        }, { merge: true });
-
-        document.getElementById("juge-feedback").className = "feedback success";
-        document.getElementById("juge-feedback").textContent = "Score valide avec succes.";
-        document.getElementById("juge-feedback").classList.remove("hidden");
-        btn.disabled = false;
-        btn.textContent = "VALIDER ET SOUMETTRE";
-
-    } catch (e) {
-        console.error(e);
-        document.getElementById("juge-feedback").className = "feedback error";
-        document.getElementById("juge-feedback").textContent = "Erreur lors de la validation.";
-        document.getElementById("juge-feedback").classList.remove("hidden");
-        btn.disabled = false;
-        btn.textContent = "VALIDER ET SOUMETTRE";
-    }
-};
-
-window.validerScore = async () => {
-    if (!participantSelectionne) return;
-
-    const NB_BLOCS = phaseActuelle === "qualifs" ? 20 : 4;
-    const blocs = [];
-
-    for (let i = 1; i <= NB_BLOCS; i++) {
-        const completed = document.getElementById(`check-${i}`).checked;
-        const essais = completed
-            ? parseInt(document.getElementById(`attempts-${i}`).textContent)
-            : 0;
-        const zone = phaseActuelle !== "qualifs"
-            ? (document.getElementById(`zone-${i}`)?.checked ?? false)
-            : false;
-        blocs.push({ id: i, completed, essais: completed ? essais : 0, zone });
-    }
-
-    const totalTops = blocs.filter(b => b.completed).length;
-    const totalEssais = blocs.reduce((sum, b) => sum + b.essais, 0);
-    const score = blocs.reduce((sum, b) => {
-        if (!b.completed) return sum;
-        if (phaseActuelle === "qualifs") return sum + 25 - (b.essais * 0.1);
-        return sum + 25 + (b.zone ? 10 : 0) - (b.essais * 0.1);
-    }, 0);
-
-    const btn = document.getElementById("valider-btn");
-    btn.disabled = true;
-    btn.textContent = "ENVOI EN COURS...";
-
-    try {
-        await setDoc(doc(db, "scores", participantSelectionne.id), {
-            [phaseActuelle]: {
-                blocs,
-                totalTops,
                 totalEssais,
                 score: parseFloat(score.toFixed(1)),
                 submitted: true,
