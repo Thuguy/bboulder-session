@@ -247,3 +247,13 @@ window.fermerModal = () => {
     document.getElementById("modal").classList.add("hidden");
     participantAModifier = null;
 };
+
+window.deconnexion = deconnexion;
+window.changerPhase = changerPhase;
+window.creerParticipant = creerParticipant;
+window.filtrer = filtrer;
+window.ouvrirModal = ouvrirModal;
+window.fermerModal = fermerModal;
+window.sauvegarderCorrection = sauvegarderCorrection;
+window.changeModalAttempts = changeModalAttempts;
+window.majScoreModal = majScoreModal;
