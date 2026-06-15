@@ -11,6 +11,7 @@ if (!user || (user.role !== "juge" && user.role !== "admin")) {
 let tousLesParticipants = [];
 let filtreActuel = "tous";
 let participantAModifier = null;
+let phaseActuelle = "qualifs";
 
 // DECONNEXION
 window.deconnexion = () => {
