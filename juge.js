@@ -24,7 +24,8 @@ let phaseActuelle = "qualifs";
 
 onSnapshot(phaseRef, (snap) => {
     phaseActuelle = snap.data()?.phase || "qualifs";
-    afficherParticipants();
+    const labels = { qualifs: "QUALIFICATIONS", demis: "DEMI-FINALES", finale: "FINALE" };
+    document.getElementById("phase-actuelle").textContent = labels[phaseActuelle] || phaseActuelle.toUpperCase();
 });
 
 // LISTE PARTICIPANTS
