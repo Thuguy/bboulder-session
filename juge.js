@@ -108,9 +108,9 @@ window.selectionnerParticipant = async (userId) => {
 
     for (let i = 1; i <= NB_BLOCS; i++) {
         const bloc = scoreExistant?.blocs?.find(b => b.id === i);
-        const checked = bloc?.completed ? "checked" : "";
         const essais = bloc?.essais ?? 1;
         const zone = bloc?.zone ? "checked" : "";
+        const top = bloc?.top ? "checked" : "";
 
         const card = document.createElement("div");
         card.className = "card bloc-card";
@@ -118,32 +118,32 @@ window.selectionnerParticipant = async (userId) => {
         let html = `
       <div class="bloc-header">
         <span class="bloc-name">BLOC ${i}</span>
-        <label class="toggle">
-          <input type="checkbox" id="check-${i}" ${checked} onchange="toggleBlocJuge(${i})"/>
-          <span class="slider"></span>
-        </label>
       </div>
-      <div class="attempts-row ${bloc?.completed ? '' : 'hidden'}" id="attempts-row-${i}">
-        <span class="label">ESSAIS</span>
+      <div class="bloc-saisie-row">
         <div class="counter">
+          <span class="label">ESSAIS</span>
           <button type="button" onclick="changeAttemptsJuge(${i}, -1)">-</button>
           <span id="attempts-${i}">${essais}</span>
           <button type="button" onclick="changeAttemptsJuge(${i}, +1)">+</button>
         </div>
-      </div>
-    `;
-
-        if (phaseActuelle !== "qualifs") {
-            html += `
-        <div class="zone-row ${bloc?.completed ? '' : 'hidden'}" id="zone-row-${i}">
+        ${phaseActuelle !== "qualifs" ? `
+        <div class="toggle-group">
           <span class="label">ZONE</span>
           <label class="toggle">
             <input type="checkbox" id="zone-${i}" ${zone} onchange="majScoreJuge()"/>
             <span class="slider"></span>
           </label>
         </div>
-      `;
-        }
+        ` : ""}
+        <div class="toggle-group">
+          <span class="label">TOP</span>
+          <label class="toggle">
+            <input type="checkbox" id="top-${i}" ${top} onchange="majScoreJuge()"/>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    `;
 
         card.innerHTML = html;
         container.appendChild(card);
@@ -151,14 +151,6 @@ window.selectionnerParticipant = async (userId) => {
 
     majScoreJuge();
     document.getElementById("saisie-container").classList.remove("hidden");
-};
-
-window.toggleBlocJuge = (id) => {
-    const checked = document.getElementById(`check-${id}`).checked;
-    document.getElementById(`attempts-row-${id}`).classList.toggle("hidden", !checked);
-    const zoneRow = document.getElementById(`zone-row-${id}`);
-    if (zoneRow) zoneRow.classList.toggle("hidden", !checked);
-    majScoreJuge();
 };
 
 window.changeAttemptsJuge = (id, delta) => {
@@ -173,19 +165,80 @@ window.majScoreJuge = () => {
     let score = 0;
 
     for (let i = 1; i <= NB_BLOCS; i++) {
-        const completed = document.getElementById(`check-${i}`)?.checked;
-        if (completed) {
-            const essais = parseInt(document.getElementById(`attempts-${i}`).textContent);
-            if (phaseActuelle === "qualifs") {
-                score += 25 - (essais * 0.1);
-            } else {
-                const zone = document.getElementById(`zone-${i}`)?.checked;
-                score += 25 + (zone ? 10 : 0) - (essais * 0.1);
-            }
+        const essais = parseInt(document.getElementById(`attempts-${i}`).textContent);
+        const top = document.getElementById(`top-${i}`)?.checked ?? false;
+        const zone = phaseActuelle !== "qualifs"
+            ? (document.getElementById(`zone-${i}`)?.checked ?? false)
+            : false;
+
+        if (top) {
+            score += 25 - (essais * 0.1);
+        } else if (zone) {
+            score += 10 - (essais * 0.1);
+        } else {
+            score += 0 - (essais * 0.1);
         }
     }
 
     document.getElementById("score-display").textContent = score.toFixed(1);
+};
+
+window.validerScore = async () => {
+    if (!participantSelectionne) return;
+
+    const NB_BLOCS = phaseActuelle === "qualifs" ? 20 : 4;
+    const blocs = [];
+
+    for (let i = 1; i <= NB_BLOCS; i++) {
+        const essais = parseInt(document.getElementById(`attempts-${i}`).textContent);
+        const top = document.getElementById(`top-${i}`)?.checked ?? false;
+        const zone = phaseActuelle !== "qualifs"
+            ? (document.getElementById(`zone-${i}`)?.checked ?? false)
+            : false;
+        blocs.push({ id: i, essais, top, zone });
+    }
+
+    const totalTops = blocs.filter(b => b.top).length;
+    const totalZones = blocs.filter(b => b.zone).length;
+    const totalEssais = blocs.reduce((sum, b) => sum + b.essais, 0);
+    const score = blocs.reduce((sum, b) => {
+        if (b.top) return sum + 25 - (b.essais * 0.1);
+        if (b.zone) return sum + 10 - (b.essais * 0.1);
+        return sum - (b.essais * 0.1);
+    }, 0);
+
+    const btn = document.getElementById("valider-btn");
+    btn.disabled = true;
+    btn.textContent = "ENVOI EN COURS...";
+
+    try {
+        await setDoc(doc(db, "scores", participantSelectionne.id), {
+            [phaseActuelle]: {
+                blocs,
+                totalTops,
+                totalZones,
+                totalEssais,
+                score: parseFloat(score.toFixed(1)),
+                submitted: true,
+                jugeId: user.id,
+                timestamp: serverTimestamp()
+            }
+        }, { merge: true });
+
+        document.getElementById("juge-feedback").className = "feedback success";
+        document.getElementById("juge-feedback").textContent = "Score valide avec succes.";
+        document.getElementById("juge-feedback").classList.remove("hidden");
+        btn.disabled = false;
+        btn.textContent = "VALIDER ET SOUMETTRE";
+
+    } catch (e) {
+        console.error(e);
+        document.getElementById("juge-feedback").className = "feedback error";
+        document.getElementById("juge-feedback").textContent = "Erreur lors de la validation.";
+        document.getElementById("juge-feedback").classList.remove("hidden");
+        btn.disabled = false;
+        btn.textContent = "VALIDER ET SOUMETTRE";
+    }
 };
 
 window.validerScore = async () => {

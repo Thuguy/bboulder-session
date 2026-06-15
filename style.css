@@ -687,3 +687,17 @@ tr:last-child td {
     padding-top: 24px;
     border-top: 1px solid #222222;
 }
+.bloc-saisie-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.toggle-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
