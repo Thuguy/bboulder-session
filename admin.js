@@ -22,8 +22,6 @@ window.deconnexion = () => {
 const phaseRef = doc(db, "config", "event");
 
 onSnapshot(collection(db, "users"), (snapshot) => {
-    tousLesParticipants = [];
-
     const promises = snapshot.docs.map(async (docSnap) => {
         const data = docSnap.data();
         const scoreSnap = await getDoc(doc(db, "scores", docSnap.id));
@@ -35,7 +33,13 @@ onSnapshot(collection(db, "users"), (snapshot) => {
     });
 
     Promise.all(promises).then((participants) => {
-        tousLesParticipants = participants;
+        // Deduplique par ID
+        const seen = new Set();
+        tousLesParticipants = participants.filter(p => {
+            if (seen.has(p.id)) return false;
+            seen.add(p.id);
+            return true;
+        });
         afficherParticipants();
     });
 });
