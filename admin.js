@@ -22,9 +22,9 @@ window.deconnexion = () => {
 // PHASE
 const phaseRef = doc(db, "config", "event");
 onSnapshot(phaseRef, (snap) => {
-    const phase = snap.data()?.phase || "qualifs";
+    phaseActuelle = snap.data()?.phase || "qualifs";
     const labels = { qualifs: "QUALIFICATIONS", demis: "DEMI-FINALES", finale: "FINALE" };
-    document.getElementById("phase-actuelle").textContent = labels[phase] || phase.toUpperCase();
+    document.getElementById("phase-actuelle").textContent = labels[phaseActuelle] || phaseActuelle.toUpperCase();
 });
 
 onSnapshot(collection(db, "users"), (snapshot) => {
