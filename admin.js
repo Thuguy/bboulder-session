@@ -111,20 +111,7 @@ function genererMotDePasse() {
     return "BBS-" + nombre;
 }
 
-// LISTE PARTICIPANTS
-onSnapshot(collection(db, "users"), async (snapshot) => {
-    tousLesParticipants = [];
-    for (const docSnap of snapshot.docs) {
-        const data = docSnap.data();
-        const scoreSnap = await getDoc(doc(db, "scores", docSnap.id));
-        tousLesParticipants.push({
-            id: docSnap.id,
-            ...data,
-            scores: scoreSnap.exists() ? scoreSnap.data() : null
-        });
-    }
-    afficherParticipants();
-});
+
 
 window.filtrer = (filtre, btnElement) => {
     filtreActuel = filtre;
