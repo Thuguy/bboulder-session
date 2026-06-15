@@ -3,60 +3,80 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BBoulder — Connexion</title>
+    <title>BBoulder Session</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div class="container center">
         <div class="card login-card">
-            <div class="login-icon">BBoulder</div>
-            <p class="subtitle">Entre le mot de passe fourni par les organisateurs</p>
+            <div class="logo">BBOULDER</div>
+            <p class="subtitle">BLEAU BOULDER SESSION &#8212; 27 &amp; 28 JUIN 2026</p>
 
-            <input type="password"
-                   id="password"
-                   placeholder="Mot de passe..."
-                   onkeydown="if(event.key==='Enter') login()" />
+            <input type="text" id="prenom" placeholder="Pr&#233;nom" />
+            <input type="text" id="nom" placeholder="Nom" />
+            <input type="password" id="password" placeholder="Mot de passe" />
 
             <div id="error-msg" class="hidden feedback error">
-                Mot de passe incorrect, r&#233;essaie !
+                Identifiants incorrects, r&#233;essaie.
             </div>
 
             <button id="login-btn" onclick="login()">
-                Acc&#233;der
+                SE CONNECTER
             </button>
         </div>
     </div>
 
     <script type="module">
-        import { validatePassword, saveSession, isAuthenticated } from "./auth.js";
+        import { login, getSession } from "./auth.js";
 
-        if (isAuthenticated()) window.location.href = "form.html";
+        const session = getSession();
+        if (session) {
+            if (session.role === "juge" || session.role === "admin") {
+                window.location.href = "admin.html";
+            } else {
+                window.location.href = "qualifs.html";
+            }
+        }
 
         window.login = async () => {
-            const input = document.getElementById("password").value;
+            const prenom = document.getElementById("prenom").value;
+            const nom = document.getElementById("nom").value;
+            const password = document.getElementById("password").value;
             const btn = document.getElementById("login-btn");
             const errMsg = document.getElementById("error-msg");
 
+            if (!prenom || !nom || !password) {
+                errMsg.textContent = "Merci de remplir tous les champs.";
+                errMsg.classList.remove("hidden");
+                return;
+            }
+
             btn.disabled = true;
-            btn.textContent = "V&#233;rification...";
+            btn.textContent = "CONNEXION...";
             errMsg.classList.add("hidden");
 
             try {
-                const valid = await validatePassword(input);
-                if (valid) {
-                    saveSession();
-                    window.location.href = "form.html";
-                } else {
+                const user = await login(prenom, nom, password);
+                if (!user) {
+                    errMsg.textContent = "Identifiants incorrects, r&#233;essaie.";
                     errMsg.classList.remove("hidden");
                     btn.disabled = false;
-                    btn.textContent = "Acc&#233;der";
+                    btn.textContent = "SE CONNECTER";
+                    return;
                 }
+
+                if (user.role === "juge" || user.role === "admin") {
+                    window.location.href = "admin.html";
+                } else {
+                    window.location.href = "qualifs.html";
+                }
+
             } catch (e) {
                 console.error(e);
                 errMsg.textContent = "Erreur de connexion, r&#233;essaie.";
                 errMsg.classList.remove("hidden");
                 btn.disabled = false;
-                btn.textContent = "Acc&#233;der";
+                btn.textContent = "SE CONNECTER";
             }
         };
     </script>

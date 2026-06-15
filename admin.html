@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BBoulder &#8212; Admin</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">BBOULDER</div>
+            <p class="subtitle">ESPACE JUGE</p>
+            <button class="btn-small btn-outline" onclick="deconnexion()">DECONNEXION</button>
+        </header>
+
+        <!-- GESTION DES PHASES -->
+        <div class="section-title">PHASE EN COURS</div>
+        <div class="card phase-card">
+            <div id="phase-actuelle" class="phase-badge">Chargement...</div>
+            <div class="phase-buttons">
+                <button class="btn-phase" onclick="changerPhase('qualifs')">QUALIFS</button>
+                <button class="btn-phase" onclick="changerPhase('demis')">DEMI-FINALES</button>
+                <button class="btn-phase" onclick="changerPhase('finale')">FINALE</button>
+            </div>
+        </div>
+
+        <!-- CREATION PARTICIPANT -->
+        <div class="section-title">AJOUTER UN PARTICIPANT</div>
+        <div class="card">
+            <div class="form-row">
+                <input type="text" id="new-prenom" placeholder="Pr&#233;nom" />
+                <input type="text" id="new-nom" placeholder="Nom" />
+            </div>
+            <div class="form-row">
+                <select id="new-categorie">
+                    <option value="homme">Homme</option>
+                    <option value="femme">Femme</option>
+                </select>
+                <select id="new-role">
+                    <option value="participant">Participant</option>
+                    <option value="juge">Juge</option>
+                </select>
+            </div>
+            <button class="btn-full" onclick="creerParticipant()">CREER LE COMPTE</button>
+            <div id="create-feedback" class="hidden feedback"></div>
+        </div>
+
+        <!-- LISTE DES PARTICIPANTS -->
+        <div class="section-title">PARTICIPANTS</div>
+        <div class="filter-row">
+            <button class="btn-filter active" onclick="filtrer('tous', this)">TOUS</button>
+            <button class="btn-filter" onclick="filtrer('homme', this)">HOMMES</button>
+            <button class="btn-filter" onclick="filtrer('femme', this)">FEMMES</button>
+            <button class="btn-filter" onclick="filtrer('juge', this)">JUGES</button>
+        </div>
+        <div id="participants-list"></div>
+
+        <!-- MODAL CORRECTION SCORE -->
+        <div id="modal" class="modal hidden">
+            <div class="modal-content card">
+                <div class="modal-title">MODIFIER LE SCORE</div>
+                <div id="modal-body"></div>
+                <div class="modal-buttons">
+                    <button class="btn-full" onclick="sauvegarderCorrection()">SAUVEGARDER</button>
+                    <button class="btn-full btn-outline" onclick="fermerModal()">ANNULER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
