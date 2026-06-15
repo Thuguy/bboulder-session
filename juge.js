@@ -1,0 +1,243 @@
+import { db, getSession, clearSession, requireAuth } from "./auth.js";
+import {
+    collection, doc, getDoc, getDocs, setDoc, onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const user = requireAuth();
+if (!user || (user.role !== "juge" && user.role !== "admin")) {
+    window.location.href = "index.html";
+}
+
+let tousLesParticipants = [];
+let participantSelectionne = null;
+let filtreActuel = "tous";
+
+// DECONNEXION
+window.deconnexion = () => {
+    clearSession();
+    window.location.href = "index.html";
+};
+
+// PHASE EN COURS
+const phaseRef = doc(db, "config", "event");
+let phaseActuelle = "qualifs";
+
+onSnapshot(phaseRef, (snap) => {
+    phaseActuelle = snap.data()?.phase || "qualifs";
+    afficherParticipants();
+});
+
+// LISTE PARTICIPANTS
+onSnapshot(collection(db, "users"), async (snapshot) => {
+    tousLesParticipants = [];
+    for (const docSnap of snapshot.docs) {
+        const data = docSnap.data();
+        if (data.role !== "participant") continue;
+        const scoreSnap = await getDoc(doc(db, "scores", docSnap.id));
+        tousLesParticipants.push({
+            id: docSnap.id,
+            ...data,
+            scores: scoreSnap.exists() ? scoreSnap.data() : null
+        });
+    }
+    afficherParticipants();
+});
+
+window.filtrerCategorie = (filtre, btnElement) => {
+    filtreActuel = filtre;
+    document.querySelectorAll(".btn-filter").forEach(b => b.classList.remove("active"));
+    btnElement.classList.add("active");
+    afficherParticipants();
+};
+
+function afficherParticipants() {
+    const container = document.getElementById("participants-select");
+    let filtres = tousLesParticipants;
+
+    if (filtreActuel !== "tous") {
+        filtres = tousLesParticipants.filter(p => p.categorie === filtreActuel);
+    }
+
+    if (filtres.length === 0) {
+        container.innerHTML = "<div class='card text-center'>Aucun participant.</div>";
+        return;
+    }
+
+    container.innerHTML = filtres.map(p => {
+        const scorePhase = p.scores?.[phaseActuelle];
+        const statut = scorePhase?.submitted
+            ? "Saisi"
+            : scorePhase?.validated
+                ? "Valide"
+                : "En attente";
+
+        return `
+      <div class="card participant-card" onclick="selectionnerParticipant('${p.id}')">
+        <div class="participant-info">
+          <span class="participant-nom">${p.prenom.toUpperCase()} ${p.nom.toUpperCase()}</span>
+          <span class="participant-meta">${p.categorie.toUpperCase()}</span>
+        </div>
+        <span class="score-badge ${scorePhase?.submitted ? 'badge-success' : 'badge-pending'}">${statut}</span>
+      </div>
+    `;
+    }).join("");
+}
+
+window.selectionnerParticipant = async (userId) => {
+    participantSelectionne = tousLesParticipants.find(p => p.id === userId);
+    if (!participantSelectionne) return;
+
+    document.getElementById("participant-nom").textContent =
+        participantSelectionne.prenom.toUpperCase() + " " + participantSelectionne.nom.toUpperCase();
+
+    const NB_BLOCS = phaseActuelle === "qualifs" ? 20 : 4;
+    const container = document.getElementById("blocs-juge");
+    container.innerHTML = "";
+
+    const scoreExistant = participantSelectionne.scores?.[phaseActuelle];
+
+    for (let i = 1; i <= NB_BLOCS; i++) {
+        const bloc = scoreExistant?.blocs?.find(b => b.id === i);
+        const checked = bloc?.completed ? "checked" : "";
+        const essais = bloc?.essais ?? 1;
+        const zone = bloc?.zone ? "checked" : "";
+
+        const card = document.createElement("div");
+        card.className = "card bloc-card";
+
+        let html = `
+      <div class="bloc-header">
+        <span class="bloc-name">BLOC ${i}</span>
+        <label class="toggle">
+          <input type="checkbox" id="check-${i}" ${checked} onchange="toggleBlocJuge(${i})"/>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="attempts-row ${bloc?.completed ? '' : 'hidden'}" id="attempts-row-${i}">
+        <span class="label">ESSAIS</span>
+        <div class="counter">
+          <button type="button" onclick="changeAttemptsJuge(${i}, -1)">-</button>
+          <span id="attempts-${i}">${essais}</span>
+          <button type="button" onclick="changeAttemptsJuge(${i}, +1)">+</button>
+        </div>
+      </div>
+    `;
+
+        if (phaseActuelle !== "qualifs") {
+            html += `
+        <div class="zone-row ${bloc?.completed ? '' : 'hidden'}" id="zone-row-${i}">
+          <span class="label">ZONE</span>
+          <label class="toggle">
+            <input type="checkbox" id="zone-${i}" ${zone} onchange="majScoreJuge()"/>
+            <span class="slider"></span>
+          </label>
+        </div>
+      `;
+        }
+
+        card.innerHTML = html;
+        container.appendChild(card);
+    }
+
+    majScoreJuge();
+    document.getElementById("saisie-container").classList.remove("hidden");
+};
+
+window.toggleBlocJuge = (id) => {
+    const checked = document.getElementById(`check-${id}`).checked;
+    document.getElementById(`attempts-row-${id}`).classList.toggle("hidden", !checked);
+    const zoneRow = document.getElementById(`zone-row-${id}`);
+    if (zoneRow) zoneRow.classList.toggle("hidden", !checked);
+    majScoreJuge();
+};
+
+window.changeAttemptsJuge = (id, delta) => {
+    const el = document.getElementById(`attempts-${id}`);
+    const next = Math.max(1, parseInt(el.textContent) + delta);
+    el.textContent = next;
+    majScoreJuge();
+};
+
+window.majScoreJuge = () => {
+    const NB_BLOCS = phaseActuelle === "qualifs" ? 20 : 4;
+    let score = 0;
+
+    for (let i = 1; i <= NB_BLOCS; i++) {
+        const completed = document.getElementById(`check-${i}`)?.checked;
+        if (completed) {
+            const essais = parseInt(document.getElementById(`attempts-${i}`).textContent);
+            if (phaseActuelle === "qualifs") {
+                score += 25 - (essais * 0.1);
+            } else {
+                const zone = document.getElementById(`zone-${i}`)?.checked;
+                score += 25 + (zone ? 10 : 0) - (essais * 0.1);
+            }
+        }
+    }
+
+    document.getElementById("score-display").textContent = score.toFixed(1);
+};
+
+window.validerScore = async () => {
+    if (!participantSelectionne) return;
+
+    const NB_BLOCS = phaseActuelle === "qualifs" ? 20 : 4;
+    const blocs = [];
+
+    for (let i = 1; i <= NB_BLOCS; i++) {
+        const completed = document.getElementById(`check-${i}`).checked;
+        const essais = completed
+            ? parseInt(document.getElementById(`attempts-${i}`).textContent)
+            : 0;
+        const zone = phaseActuelle !== "qualifs"
+            ? (document.getElementById(`zone-${i}`)?.checked ?? false)
+            : false;
+        blocs.push({ id: i, completed, essais: completed ? essais : 0, zone });
+    }
+
+    const totalTops = blocs.filter(b => b.completed).length;
+    const totalEssais = blocs.reduce((sum, b) => sum + b.essais, 0);
+    const score = blocs.reduce((sum, b) => {
+        if (!b.completed) return sum;
+        if (phaseActuelle === "qualifs") return sum + 25 - (b.essais * 0.1);
+        return sum + 25 + (b.zone ? 10 : 0) - (b.essais * 0.1);
+    }, 0);
+
+    const btn = document.getElementById("valider-btn");
+    btn.disabled = true;
+    btn.textContent = "ENVOI EN COURS...";
+
+    try {
+        await setDoc(doc(db, "scores", participantSelectionne.id), {
+            [phaseActuelle]: {
+                blocs,
+                totalTops,
+                totalEssais,
+                score: parseFloat(score.toFixed(1)),
+                submitted: true,
+                jugeId: user.id,
+                timestamp: serverTimestamp()
+            }
+        }, { merge: true });
+
+        document.getElementById("juge-feedback").className = "feedback success";
+        document.getElementById("juge-feedback").textContent = "Score valide avec succes.";
+        document.getElementById("juge-feedback").classList.remove("hidden");
+        btn.disabled = false;
+        btn.textContent = "VALIDER ET SOUMETTRE";
+
+    } catch (e) {
+        console.error(e);
+        document.getElementById("juge-feedback").className = "feedback error";
+        document.getElementById("juge-feedback").textContent = "Erreur lors de la validation.";
+        document.getElementById("juge-feedback").classList.remove("hidden");
+        btn.disabled = false;
+        btn.textContent = "VALIDER ET SOUMETTRE";
+    }
+};
+
+window.resetSaisie = () => {
+    participantSelectionne = null;
+    document.getElementById("saisie-container").classList.add("hidden");
+    document.getElementById("juge-feedback").classList.add("hidden");
+};
