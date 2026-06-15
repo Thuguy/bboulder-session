@@ -180,29 +180,35 @@ window.ouvrirModal = async (userId) => {
 
     for (let i = 1; i <= NB_BLOCS; i++) {
         const bloc = scorePhase?.blocs?.find(b => b.id === i);
-        const checked = bloc?.completed ? "checked" : "";
-        const essais = bloc?.essais ?? 1;
+        const essais = bloc?.essais ?? 0;
         const zone = bloc?.zone ? "checked" : "";
+        const top = bloc?.top ? "checked" : "";
 
         html += `
       <div class="modal-bloc-row">
         <span>BLOC ${i}</span>
-        <label class="toggle">
-          <input type="checkbox" id="modal-check-${i}" ${checked} onchange="majScoreModal()"/>
-          <span class="slider"></span>
-        </label>
+        ${phaseActuelle !== "qualifs" ? `
+        <div class="toggle-group">
+          <span class="label">ZONE</span>
+          <label class="toggle">
+            <input type="checkbox" id="modal-zone-${i}" ${zone} onchange="majScoreModal()"/>
+            <span class="slider"></span>
+          </label>
+        </div>
+        ` : ""}
+        <div class="toggle-group">
+          <span class="label">TOP</span>
+          <label class="toggle">
+            <input type="checkbox" id="modal-top-${i}" ${top} onchange="majScoreModal()"/>
+            <span class="slider"></span>
+          </label>
+        </div>
         <div class="counter">
+          <span class="label">ESSAIS</span>
           <button type="button" onclick="changeModalAttempts(${i}, -1)">-</button>
           <span id="modal-attempts-${i}">${essais}</span>
           <button type="button" onclick="changeModalAttempts(${i}, +1)">+</button>
         </div>
-        ${phaseActuelle !== "qualifs" ? `
-        <label class="toggle">
-          <input type="checkbox" id="modal-zone-${i}" ${zone} onchange="majScoreModal()"/>
-          <span class="slider"></span>
-        </label>
-        <span class="label">ZONE</span>
-        ` : ""}
       </div>
     `;
     }
@@ -217,7 +223,7 @@ window.ouvrirModal = async (userId) => {
 
 window.changeModalAttempts = (id, delta) => {
     const el = document.getElementById(`modal-attempts-${id}`);
-    const next = Math.max(1, parseInt(el.textContent) + delta);
+    const next = Math.max(0, parseInt(el.textContent) + delta);
     el.textContent = next;
     majScoreModal();
 };
@@ -226,16 +232,15 @@ window.majScoreModal = () => {
     const NB_BLOCS = phaseActuelle === "qualifs" ? 20 : 4;
     let score = 0;
     for (let i = 1; i <= NB_BLOCS; i++) {
-        const checked = document.getElementById(`modal-check-${i}`)?.checked;
-        if (checked) {
-            const essais = parseInt(document.getElementById(`modal-attempts-${i}`).textContent);
-            if (phaseActuelle === "qualifs") {
-                score += 25 - (essais * 0.1);
-            } else {
-                const zone = document.getElementById(`modal-zone-${i}`)?.checked;
-                score += 25 + (zone ? 10 : 0) - (essais * 0.1);
-            }
-        }
+        const essais = parseInt(document.getElementById(`modal-attempts-${i}`).textContent);
+        const top = document.getElementById(`modal-top-${i}`)?.checked ?? false;
+        const zone = phaseActuelle !== "qualifs"
+            ? (document.getElementById(`modal-zone-${i}`)?.checked ?? false)
+            : false;
+
+        if (top) score += 25 - (essais * 0.1);
+        else if (zone) score += 10 - (essais * 0.1);
+        else score -= essais * 0.1;
     }
     document.getElementById("modal-score").textContent = score.toFixed(1);
 };
@@ -247,20 +252,21 @@ window.sauvegarderCorrection = async () => {
     const blocs = [];
 
     for (let i = 1; i <= NB_BLOCS; i++) {
-        const completed = document.getElementById(`modal-check-${i}`).checked;
         const essais = parseInt(document.getElementById(`modal-attempts-${i}`).textContent);
+        const top = document.getElementById(`modal-top-${i}`)?.checked ?? false;
         const zone = phaseActuelle !== "qualifs"
             ? (document.getElementById(`modal-zone-${i}`)?.checked ?? false)
             : false;
-        blocs.push({ id: i, completed, essais: completed ? essais : 0, zone });
+        blocs.push({ id: i, essais, top, zone });
     }
 
-    const totalTops = blocs.filter(b => b.completed).length;
+    const totalTops = blocs.filter(b => b.top).length;
+    const totalZones = blocs.filter(b => b.zone).length;
     const totalEssais = blocs.reduce((sum, b) => sum + b.essais, 0);
     const score = blocs.reduce((sum, b) => {
-        if (!b.completed) return sum;
-        if (phaseActuelle === "qualifs") return sum + 25 - (b.essais * 0.1);
-        return sum + 25 + (b.zone ? 10 : 0) - (b.essais * 0.1);
+        if (b.top) return sum + 25 - (b.essais * 0.1);
+        if (b.zone) return sum + 10 - (b.essais * 0.1);
+        return sum - (b.essais * 0.1);
     }, 0);
 
     try {
@@ -268,6 +274,7 @@ window.sauvegarderCorrection = async () => {
             [phaseActuelle]: {
                 blocs,
                 totalTops,
+                totalZones,
                 totalEssais,
                 score: parseFloat(score.toFixed(1)),
                 submitted: true,
@@ -282,6 +289,7 @@ window.sauvegarderCorrection = async () => {
         alert("Erreur lors de la sauvegarde.");
     }
 };
+
 
 window.fermerModal = () => {
     document.getElementById("modal").classList.add("hidden");
