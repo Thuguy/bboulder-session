@@ -654,3 +654,36 @@ tr:last-child td {
         min-height: 40px;
     }
 }
+.phase-en-cours-badge {
+    font-size: 0.75rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #ffffff;
+    background: #e3000f;
+    padding: 10px 16px;
+    border-radius: 6px;
+    text-align: center;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+
+.active-title {
+    font-size: 1rem;
+    color: #ffffff;
+    letter-spacing: 4px;
+}
+
+.sous-section-title {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #888888;
+    margin: 16px 0 8px;
+    font-weight: 700;
+}
+
+.section-historique {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #222222;
+}

@@ -13,43 +13,69 @@
             <p class="subtitle">BLEAU BOULDER SESSION &#8212; 27 &amp; 28 JUIN 2026</p>
         </header>
 
-        <div id="phase-label" class="section-title">Chargement...</div>
+        <div id="phase-en-cours-label" class="phase-en-cours-badge">Chargement...</div>
 
-        <!-- CLASSEMENT HOMMES -->
-        <div class="section-title">HOMMES</div>
-        <table id="leaderboard-homme">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>PARTICIPANT</th>
-                    <th>BLOCS</th>
-                    <th>ESSAIS</th>
-                    <th>SCORE</th>
-                </tr>
-            </thead>
-            <tbody id="tbody-homme">
-                <tr><td colspan="5">Chargement...</td></tr>
-            </tbody>
-        </table>
+        <!-- PHASE EN COURS -->
+        <div id="section-en-cours">
+            <div class="section-title active-title" id="titre-en-cours"></div>
+            <div class="sous-section-title">HOMMES</div>
+            <table>
+                <thead><tr><th>#</th><th>PARTICIPANT</th><th>BLOCS</th><th>ESSAIS</th><th>SCORE</th></tr></thead>
+                <tbody id="tbody-encours-homme"><tr><td colspan="5">Chargement...</td></tr></tbody>
+            </table>
+            <div class="sous-section-title">FEMMES</div>
+            <table>
+                <thead><tr><th>#</th><th>PARTICIPANT</th><th>BLOCS</th><th>ESSAIS</th><th>SCORE</th></tr></thead>
+                <tbody id="tbody-encours-femme"><tr><td colspan="5">Chargement...</td></tr></tbody>
+            </table>
+        </div>
 
-        <!-- CLASSEMENT FEMMES -->
-        <div class="section-title" style="margin-top: 32px;">FEMMES</div>
-        <table id="leaderboard-femme">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>PARTICIPANT</th>
-                    <th>BLOCS</th>
-                    <th>ESSAIS</th>
-                    <th>SCORE</th>
-                </tr>
-            </thead>
-            <tbody id="tbody-femme">
-                <tr><td colspan="5">Chargement...</td></tr>
-            </tbody>
-        </table>
+        <!-- QUALIFICATIONS -->
+        <div id="section-qualifs" class="section-historique">
+            <div class="section-title">QUALIFICATIONS</div>
+            <div class="sous-section-title">HOMMES</div>
+            <table>
+                <thead><tr><th>#</th><th>PARTICIPANT</th><th>BLOCS</th><th>ESSAIS</th><th>SCORE</th></tr></thead>
+                <tbody id="tbody-qualifs-homme"><tr><td colspan="5">Aucun resultat.</td></tr></tbody>
+            </table>
+            <div class="sous-section-title">FEMMES</div>
+            <table>
+                <thead><tr><th>#</th><th>PARTICIPANT</th><th>BLOCS</th><th>ESSAIS</th><th>SCORE</th></tr></thead>
+                <tbody id="tbody-qualifs-femme"><tr><td colspan="5">Aucun resultat.</td></tr></tbody>
+            </table>
+        </div>
+
+        <!-- DEMI-FINALES -->
+        <div id="section-demis" class="section-historique">
+            <div class="section-title">DEMI-FINALES</div>
+            <div class="sous-section-title">HOMMES</div>
+            <table>
+                <thead><tr><th>#</th><th>PARTICIPANT</th><th>BLOCS</th><th>ESSAIS</th><th>SCORE</th></tr></thead>
+                <tbody id="tbody-demis-homme"><tr><td colspan="5">Aucun resultat.</td></tr></tbody>
+            </table>
+            <div class="sous-section-title">FEMMES</div>
+            <table>
+                <thead><tr><th>#</th><th>PARTICIPANT</th><th>BLOCS</th><th>ESSAIS</th><th>SCORE</th></tr></thead>
+                <tbody id="tbody-demis-femme"><tr><td colspan="5">Aucun resultat.</td></tr></tbody>
+            </table>
+        </div>
+
+        <!-- FINALE -->
+        <div id="section-finale" class="section-historique">
+            <div class="section-title">FINALE</div>
+            <div class="sous-section-title">HOMMES</div>
+            <table>
+                <thead><tr><th>#</th><th>PARTICIPANT</th><th>BLOCS</th><th>ESSAIS</th><th>SCORE</th></tr></thead>
+                <tbody id="tbody-finale-homme"><tr><td colspan="5">Aucun resultat.</td></tr></tbody>
+            </table>
+            <div class="sous-section-title">FEMMES</div>
+            <table>
+                <thead><tr><th>#</th><th>PARTICIPANT</th><th>BLOCS</th><th>ESSAIS</th><th>SCORE</th></tr></thead>
+                <tbody id="tbody-finale-femme"><tr><td colspan="5">Aucun resultat.</td></tr></tbody>
+            </table>
+        </div>
+
     </div>
-
     <script type="module" src="leaderboard.js"></script>
 </body>
 </html>
