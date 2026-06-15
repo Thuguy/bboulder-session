@@ -26,7 +26,6 @@ onSnapshot(phaseRef, (snap) => {
     const labels = { qualifs: "QUALIFICATIONS", demis: "DEMI-FINALES", finale: "FINALE" };
     document.getElementById("phase-actuelle").textContent = labels[phase] || phase.toUpperCase();
 });
-
 window.changerPhase = async (nouvellePhase) => {
     const PHASES_VALIDES = ["qualifs", "demis", "finale"];
     if (!PHASES_VALIDES.includes(nouvellePhase)) return;
@@ -35,7 +34,12 @@ window.changerPhase = async (nouvellePhase) => {
     const confirme = confirm("Passer en phase : " + labels[nouvellePhase] + " ?");
     if (!confirme) return;
 
-    await updateDoc(phaseRef, { phase: nouvellePhase });
+    try {
+        await updateDoc(doc(db, "config", "event"), { phase: nouvellePhase });
+    } catch (e) {
+        console.error(e);
+        alert("Erreur lors du changement de phase.");
+    }
 };
 
 // CREATION PARTICIPANT
@@ -116,8 +120,12 @@ function afficherParticipants() {
     const liste = document.getElementById("participants-list");
     let filtres = tousLesParticipants;
 
-    if (filtreActuel !== "tous") {
-        filtres = tousLesParticipants.filter(p => p.categorie === filtreActuel || p.role === filtreActuel);
+    if (filtreActuel === "tous") {
+        filtres = tousLesParticipants.filter(p => p.role === "participant");
+    } else if (filtreActuel === "juge") {
+        filtres = tousLesParticipants.filter(p => p.role === "juge");
+    } else {
+        filtres = tousLesParticipants.filter(p => p.categorie === filtreActuel && p.role === "participant");
     }
 
     if (filtres.length === 0) {
