@@ -18,11 +18,11 @@
                    onkeydown="if(event.key==='Enter') login()" />
 
             <div id="error-msg" class="hidden feedback error">
-                Mot de passe incorrect, réessaie !
+                Mot de passe incorrect, r&#233;essaie !
             </div>
 
             <button id="login-btn" onclick="login()">
-                Accéder
+                Acc&#233;der
             </button>
         </div>
     </div>
@@ -38,7 +38,7 @@
             const errMsg = document.getElementById("error-msg");
 
             btn.disabled = true;
-            btn.textContent = "Vérification...";
+            btn.textContent = "V&#233;rification...";
             errMsg.classList.add("hidden");
 
             try {
@@ -49,14 +49,14 @@
                 } else {
                     errMsg.classList.remove("hidden");
                     btn.disabled = false;
-                    btn.textContent = "Accéder";
+                    btn.textContent = "Acc&#233;der";
                 }
             } catch (e) {
                 console.error(e);
-                errMsg.textContent = "Erreur de connexion, réessaie.";
+                errMsg.textContent = "Erreur de connexion, r&#233;essaie.";
                 errMsg.classList.remove("hidden");
                 btn.disabled = false;
-                btn.textContent = "Accéder";
+                btn.textContent = "Acc&#233;der";
             }
         };
     </script>
