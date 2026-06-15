@@ -12,15 +12,15 @@
             <div class="logo">BBOULDER</div>
             <p class="subtitle">BLEAU BOULDER SESSION &#8212; 27 &amp; 28 JUIN 2026</p>
 
-            <input type="text" id="prenom" placeholder="Pr&#233;nom" />
+            <input type="text" id="prenom" placeholder="Prenom" />
             <input type="text" id="nom" placeholder="Nom" />
             <input type="password" id="password" placeholder="Mot de passe" />
 
             <div id="error-msg" class="hidden feedback error">
-                Identifiants incorrects, r&#233;essaie.
+                Identifiants incorrects, reessaie.
             </div>
 
-            <button id="login-btn" onclick="login()">
+            <button id="login-btn" class="btn-full" onclick="login()">
                 SE CONNECTER
             </button>
         </div>
@@ -58,7 +58,7 @@
             try {
                 const user = await login(prenom, nom, password);
                 if (!user) {
-                    errMsg.textContent = "Identifiants incorrects, r&#233;essaie.";
+                    errMsg.textContent = "Identifiants incorrects, reessaie.";
                     errMsg.classList.remove("hidden");
                     btn.disabled = false;
                     btn.textContent = "SE CONNECTER";
@@ -73,7 +73,7 @@
 
             } catch (e) {
                 console.error(e);
-                errMsg.textContent = "Erreur de connexion, r&#233;essaie.";
+                errMsg.textContent = "Erreur de connexion, reessaie.";
                 errMsg.classList.remove("hidden");
                 btn.disabled = false;
                 btn.textContent = "SE CONNECTER";
