@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BBoulder — Connexion</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container center">
+        <div class="card login-card">
+            <div class="login-icon">BBoulder</div>
+            <p class="subtitle">Entre le mot de passe fourni par les organisateurs</p>
+
+            <input type="password"
+                   id="password"
+                   placeholder="Mot de passe..."
+                   onkeydown="if(event.key==='Enter') login()" />
+
+            <div id="error-msg" class="hidden feedback error">
+                Mot de passe incorrect, réessaie !
+            </div>
+
+            <button id="login-btn" onclick="login()">
+                Accéder
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { validatePassword, saveSession, isAuthenticated } from "./auth.js";
+
+        if (isAuthenticated()) window.location.href = "form.html";
+
+        window.login = async () => {
+            const input = document.getElementById("password").value;
+            const btn = document.getElementById("login-btn");
+            const errMsg = document.getElementById("error-msg");
+
+            btn.disabled = true;
+            btn.textContent = "Vérification...";
+            errMsg.classList.add("hidden");
+
+            try {
+                const valid = await validatePassword(input);
+                if (valid) {
+                    saveSession();
+                    window.location.href = "form.html";
+                } else {
+                    errMsg.classList.remove("hidden");
+                    btn.disabled = false;
+                    btn.textContent = "Accéder";
+                }
+            } catch (e) {
+                console.error(e);
+                errMsg.textContent = "Erreur de connexion, réessaie.";
+                errMsg.classList.remove("hidden");
+                btn.disabled = false;
+                btn.textContent = "Accéder";
+            }
+        };
+    </script>
+</body>
+</html>

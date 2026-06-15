@@ -1,0 +1,356 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #0a0a0a;
+    color: #ffffff;
+    padding: 16px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* HEADER */
+header {
+    text-align: center;
+    padding: 32px 0 24px;
+}
+
+.logo {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: #888888;
+    margin-top: 6px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.section-title {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #e3000f;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+/* CARDS */
+.card {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 10px;
+}
+
+    .card label {
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #888888;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    background: #0a0a0a;
+    border: 1px solid #333333;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+    input[type="text"]:focus {
+        border-color: #e3000f;
+        outline: none;
+    }
+
+/* BLOC CARD */
+.bloc-card {
+    border: 1px solid #222222;
+}
+
+.bloc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 12px;
+}
+
+.bloc-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* TOGGLE */
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+}
+
+    .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #333333;
+    border-radius: 26px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .slider:before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        left: 3px;
+        bottom: 3px;
+        background: #ffffff;
+        border-radius: 50%;
+        transition: 0.3s;
+    }
+
+input:checked + .slider {
+    background: #e3000f;
+}
+
+    input:checked + .slider:before {
+        transform: translateX(22px);
+    }
+
+/* COMPTEUR */
+.attempts-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #222222;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #888888;
+}
+
+.counter {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+    .counter button {
+        width: 36px;
+        height: 36px;
+        border: 1px solid #333333;
+        border-radius: 4px;
+        background: #0a0a0a;
+        color: #ffffff;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: border-color 0.2s;
+    }
+
+        .counter button:hover {
+            border-color: #e3000f;
+            color: #e3000f;
+        }
+
+    .counter span {
+        font-size: 1.4rem;
+        font-weight: 700;
+        min-width: 24px;
+        text-align: center;
+    }
+
+/* BOUTON SUBMIT */
+#submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: #e3000f;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background 0.2s;
+}
+
+    #submit-btn:hover {
+        background: #b8000c;
+    }
+
+    #submit-btn:disabled {
+        background: #333333;
+        cursor: not-allowed;
+    }
+
+/* FEEDBACK */
+.feedback {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.success {
+    background: #0a1f0a;
+    color: #32CD32;
+    border: 1px solid #32CD32;
+}
+
+.error {
+    background: #1f0a0a;
+    color: #e3000f;
+    border: 1px solid #e3000f;
+}
+
+.hidden {
+    display: none;
+}
+
+/* LOGIN */
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-card {
+    text-align: center;
+    max-width: 380px;
+    width: 100%;
+    padding: 40px 24px;
+    border: 1px solid #222222;
+}
+
+.login-icon {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    color: #ffffff;
+}
+
+.login-card .subtitle {
+    margin-bottom: 24px;
+}
+
+.login-card input[type="password"] {
+    width: 100%;
+    padding: 14px;
+    background: #0a0a0a;
+    border: 1px solid #333333;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 1rem;
+    text-align: center;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+    transition: border 0.2s;
+}
+
+    .login-card input[type="password"]:focus {
+        border-color: #e3000f;
+        outline: none;
+    }
+
+.login-card button {
+    width: 100%;
+    padding: 14px;
+    background: #e3000f;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: background 0.2s;
+}
+
+    .login-card button:hover {
+        background: #b8000c;
+    }
+
+    .login-card button:disabled {
+        background: #333333;
+        cursor: not-allowed;
+    }
+
+/* LEADERBOARD */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th {
+    background: #e3000f;
+    color: #ffffff;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #222222;
+    font-size: 0.95rem;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.rank-1 td {
+    color: #FFD700;
+    font-weight: 700;
+}
+
+.rank-2 td {
+    color: #cccccc;
+    font-weight: 600;
+}
+
+.rank-3 td {
+    color: #cd7f32;
+    font-weight: 600;
+}
