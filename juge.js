@@ -28,19 +28,28 @@ onSnapshot(phaseRef, (snap) => {
 });
 
 // LISTE PARTICIPANTS
-onSnapshot(collection(db, "users"), async (snapshot) => {
-    tousLesParticipants = [];
-    for (const docSnap of snapshot.docs) {
-        const data = docSnap.data();
-        if (data.role !== "participant") continue;
-        const scoreSnap = await getDoc(doc(db, "scores", docSnap.id));
-        tousLesParticipants.push({
-            id: docSnap.id,
-            ...data,
-            scores: scoreSnap.exists() ? scoreSnap.data() : null
+onSnapshot(collection(db, "users"), (snapshot) => {
+    const promises = snapshot.docs
+        .filter(docSnap => docSnap.data().role === "participant")
+        .map(async (docSnap) => {
+            const data = docSnap.data();
+            const scoreSnap = await getDoc(doc(db, "scores", docSnap.id));
+            return {
+                id: docSnap.id,
+                ...data,
+                scores: scoreSnap.exists() ? scoreSnap.data() : null
+            };
         });
-    }
-    afficherParticipants();
+
+    Promise.all(promises).then((participants) => {
+        const seen = new Set();
+        tousLesParticipants = participants.filter(p => {
+            if (seen.has(p.id)) return false;
+            seen.add(p.id);
+            return true;
+        });
+        afficherParticipants();
+    });
 });
 
 window.filtrerCategorie = (filtre, btnElement) => {
