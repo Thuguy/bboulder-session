@@ -764,3 +764,10 @@ tr:last-child td {
         font-size: 3.6rem;
     }
 }
+.nav-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
