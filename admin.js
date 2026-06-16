@@ -25,8 +25,8 @@ onSnapshot(phaseRef, (snap) => {
     phaseActuelle = snap.data()?.phase || "qualifs";
     const labels = { qualifs: "QUALIFICATIONS", demis: "DEMI-FINALES", finale: "FINALE" };
     document.getElementById("phase-actuelle").textContent = labels[phaseActuelle] || phaseActuelle.toUpperCase();
+    afficherParticipants(); 
 });
-
 onSnapshot(collection(db, "users"), (snapshot) => {
     const promises = snapshot.docs.map(async (docSnap) => {
         const data = docSnap.data();
