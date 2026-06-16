@@ -138,8 +138,8 @@ window.filtrer = (filtre, btnElement) => {
 };
 
 function afficherParticipants() {
-
     const liste = document.getElementById("participants-list");
+    const recherche = document.getElementById("search-participant")?.value.toLowerCase().trim() ?? "";
     let filtres = tousLesParticipants;
 
     if (filtreActuel === "tous") {
@@ -148,6 +148,13 @@ function afficherParticipants() {
         filtres = tousLesParticipants.filter(p => p.role === "juge");
     } else {
         filtres = tousLesParticipants.filter(p => p.categorie === filtreActuel && p.role === "participant");
+    }
+
+    if (recherche) {
+        filtres = filtres.filter(p =>
+            (p.prenom + " " + p.nom).toLowerCase().includes(recherche) ||
+            (p.nom + " " + p.prenom).toLowerCase().includes(recherche)
+        );
     }
 
     if (filtres.length === 0) {

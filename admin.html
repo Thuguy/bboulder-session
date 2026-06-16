@@ -58,6 +58,18 @@
             <button class="btn-filter" onclick="filtrer('femme', this)">FEMMES</button>
             <button class="btn-filter" onclick="filtrer('juge', this)">JUGES</button>
         </div>
+        <div class="section-title">PARTICIPANTS</div>
+        <div class="filter-row">
+            <button class="btn-filter active" onclick="filtrer('tous', this)">TOUS</button>
+            <button class="btn-filter" onclick="filtrer('homme', this)">HOMMES</button>
+            <button class="btn-filter" onclick="filtrer('femme', this)">FEMMES</button>
+            <button class="btn-filter" onclick="filtrer('juge', this)">JUGES</button>
+        </div>
+        <input type="text"
+               id="search-participant"
+               placeholder="Rechercher un participant..."
+               oninput="afficherParticipants()"
+               style="margin-bottom: 12px;" />
         <div id="participants-list"></div>
 
         <div id="modal" class="modal hidden">
