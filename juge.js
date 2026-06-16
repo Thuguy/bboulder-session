@@ -22,11 +22,6 @@ window.deconnexion = () => {
 const phaseRef = doc(db, "config", "event");
 let phaseActuelle = "qualifs";
 
-onSnapshot(phaseRef, (snap) => {
-    phaseActuelle = snap.data()?.phase || "qualifs";
-    const labels = { qualifs: "QUALIFICATIONS", demis: "DEMI-FINALES", finale: "FINALE" };
-    document.getElementById("phase-actuelle").textContent = labels[phaseActuelle] || phaseActuelle.toUpperCase();
-});
 
 // LISTE PARTICIPANTS
 onSnapshot(collection(db, "users"), (snapshot) => {
@@ -53,33 +48,37 @@ onSnapshot(collection(db, "users"), (snapshot) => {
     });
 });
 
-window.filtrerCategorie = (filtre, btnElement) => {
-    filtreActuel = filtre;
-    document.querySelectorAll(".btn-filter").forEach(b => b.classList.remove("active"));
-    btnElement.classList.add("active");
+// Ecoute les qualifies
+let qualifies = { hommes: [], femmes: [] };
+
+onSnapshot(doc(db, "config", "event"), (snap) => {
+    phaseActuelle = snap.data()?.phase || "qualifs";
+    qualifies = snap.data()?.qualifies || { hommes: [], femmes: [] };
     afficherParticipants();
-};
+});
 
 function afficherParticipants() {
     const container = document.getElementById("participants-select");
     let filtres = tousLesParticipants;
 
+    // En demis et finale, filtre uniquement les qualifies
+    if (phaseActuelle !== "qualifs" && (qualifies.hommes.length > 0 || qualifies.femmes.length > 0)) {
+        const tousQualifies = [...qualifies.hommes, ...qualifies.femmes];
+        filtres = tousLesParticipants.filter(p => tousQualifies.includes(p.id));
+    }
+
     if (filtreActuel !== "tous") {
-        filtres = tousLesParticipants.filter(p => p.categorie === filtreActuel);
+        filtres = filtres.filter(p => p.categorie === filtreActuel);
     }
 
     if (filtres.length === 0) {
-        container.innerHTML = "<div class='card text-center'>Aucun participant.</div>";
+        container.innerHTML = "<div class='card text-center'>Aucun participant qualifie.</div>";
         return;
     }
 
     container.innerHTML = filtres.map(p => {
         const scorePhase = p.scores?.[phaseActuelle];
-        const statut = scorePhase?.submitted
-            ? "Saisi"
-            : scorePhase?.validated
-                ? "Valide"
-                : "En attente";
+        const statut = scorePhase?.submitted ? "Saisi" : "En attente";
 
         return `
       <div class="card participant-card" onclick="selectionnerParticipant('${p.id}')">
@@ -92,6 +91,15 @@ function afficherParticipants() {
     `;
     }).join("");
 }
+
+window.filtrerCategorie = (filtre, btnElement) => {
+    filtreActuel = filtre;
+    document.querySelectorAll(".btn-filter").forEach(b => b.classList.remove("active"));
+    btnElement.classList.add("active");
+    afficherParticipants();
+};
+
+
 
 window.selectionnerParticipant = async (userId) => {
     participantSelectionne = tousLesParticipants.find(p => p.id === userId);

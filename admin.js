@@ -61,20 +61,60 @@ onSnapshot(collection(db, "users"), (snapshot) => {
     });
 });
 window.changerPhase = async (nouvellePhase) => {
-    const PHASES_VALIDES = ["qualifs", "demis", "finale"];
-    if (!PHASES_VALIDES.includes(nouvellePhase)) return;
+  const PHASES_VALIDES = ["qualifs", "demis", "finale"];
+  if (!PHASES_VALIDES.includes(nouvellePhase)) return;
 
-    const labels = { qualifs: "QUALIFICATIONS", demis: "DEMI-FINALES", finale: "FINALE" };
-    const confirme = confirm("Passer en phase : " + labels[nouvellePhase] + " ?");
-    if (!confirme) return;
+  const labels = { qualifs: "QUALIFICATIONS", demis: "DEMI-FINALES", finale: "FINALE" };
+  const confirme = confirm("Passer en phase : " + labels[nouvellePhase] + " ?");
+  if (!confirme) return;
 
-    try {
-        await updateDoc(doc(db, "config", "event"), { phase: nouvellePhase });
-    } catch (e) {
-        console.error(e);
-        alert("Erreur lors du changement de phase.");
+  try {
+    // Calcule les qualifies si on passe en demis ou finale
+    if (nouvellePhase === "demis") {
+      await calculerQualifies("qualifs", 12);
+    } else if (nouvellePhase === "finale") {
+      await calculerQualifies("demis", 6);
     }
+
+    await updateDoc(doc(db, "config", "event"), { phase: nouvellePhase });
+
+  } catch (e) {
+    console.error(e);
+    alert("Erreur lors du changement de phase.");
+  }
 };
+
+async function calculerQualifies(phaseSource, nbQualifies) {
+  const hommes = tousLesParticipants
+    .filter(p => p.role === "participant" && p.categorie === "homme" && p.scores?.[phaseSource]?.submitted)
+    .sort((a, b) => {
+      const scoreA = a.scores[phaseSource].score ?? 0;
+      const scoreB = b.scores[phaseSource].score ?? 0;
+      if (scoreB !== scoreA) return scoreB - scoreA;
+      return (a.scores[phaseSource].totalEssais ?? 0) - (b.scores[phaseSource].totalEssais ?? 0);
+    })
+    .slice(0, nbQualifies)
+    .map(p => p.id);
+
+  const femmes = tousLesParticipants
+    .filter(p => p.role === "participant" && p.categorie === "femme" && p.scores?.[phaseSource]?.submitted)
+    .sort((a, b) => {
+      const scoreA = a.scores[phaseSource].score ?? 0;
+      const scoreB = b.scores[phaseSource].score ?? 0;
+      if (scoreB !== scoreA) return scoreB - scoreA;
+      return (a.scores[phaseSource].totalEssais ?? 0) - (b.scores[phaseSource].totalEssais ?? 0);
+    })
+    .slice(0, nbQualifies)
+    .map(p => p.id);
+
+  // Sauvegarde les qualifies dans Firestore
+  await updateDoc(doc(db, "config", "event"), {
+    qualifies: { hommes, femmes }
+  });
+
+  console.log("Qualifies hommes : " + hommes.length);
+  console.log("Qualifies femmes : " + femmes.length);
+}
 
 // CREATION PARTICIPANT
 window.creerParticipant = async () => {
