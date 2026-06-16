@@ -127,6 +127,7 @@ window.filtrer = (filtre, btnElement) => {
 };
 
 function afficherParticipants() {
+
     const liste = document.getElementById("participants-list");
     let filtres = tousLesParticipants;
 
@@ -144,9 +145,9 @@ function afficherParticipants() {
     }
 
     liste.innerHTML = filtres.map(p => {
-        const qualifs = p.scores?.qualifs;
-        const soumis = qualifs?.submitted ? "Soumis" : "En attente";
-        const score = qualifs?.score ?? "-";
+        const scorePhase = p.scores?.[phaseActuelle];
+        const soumis = scorePhase?.submitted ? "Soumis" : "En attente";
+        const score = scorePhase?.score ?? "-";
 
         return `
       <div class="card participant-card">
@@ -156,8 +157,8 @@ function afficherParticipants() {
           <span class="participant-meta">Mot de passe : ${p.password}</span>
         </div>
         <div class="participant-score">
-          <span class="score-badge ${qualifs?.submitted ? 'badge-success' : 'badge-pending'}">${soumis}</span>
-          <span class="score-value">${score}</span>
+<span class="score-badge ${scorePhase?.submitted ? 'badge-success' : 'badge-pending'}">${soumis}</span>
+<span class="score-value">${score}</span>
           <button class="btn-small btn-red" onclick="ouvrirModal('${p.id}')">MODIFIER</button>
         </div>
       </div>
@@ -282,7 +283,6 @@ window.sauvegarderCorrection = async () => {
             }
         }, { merge: true });
 
-        fermerModal();
         // Met a jour le participant localement sans recharger
         const idx = tousLesParticipants.findIndex(p => p.id === participantAModifier.id);
         if (idx !== -1) {
@@ -297,6 +297,7 @@ window.sauvegarderCorrection = async () => {
             };
             afficherParticipants();
         }
+        fermerModal();              
     } catch (e) {
         console.error(e);
         alert("Erreur lors de la sauvegarde.");
