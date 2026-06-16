@@ -3,28 +3,35 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BBoulder — Mes blocs</title>
+  <title>Bleau Boulder Session &#8212; Qualifications</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div class="container">
     <header>
-      <div class="logo">BBOULDER</div>
-      <p class="subtitle">Bleau Boulder Session &#8212; 27 &amp; 28 Juin 2026</p>
+      <div class="logo">BLEAU<span>.</span>BOULDER</div>
+      <p class="subtitle">SESSION &#8212; 27 &amp; 28 JUIN 2026</p>
+      <div id="user-info" class="user-info"></div>
     </header>
 
-    <div class="card">
-      <label for="name">Ton nom / pseudo</label>
-      <input type="text" id="name" placeholder="Ex: Jean Dupont" required />
+    <div id="already-submitted" class="hidden card">
+      <p class="text-center">Tes resultats ont deja ete soumis. Contacte un juge si tu as une correction a faire.</p>
     </div>
 
-    <div id="blocs-container"></div>
+    <div id="form-container">
+      <div id="blocs-container"></div>
 
-    <button id="submit-btn" onclick="submitScore()">
-      Valider mes resultats
-    </button>
+      <div class="score-preview card">
+        <span class="label">SCORE ACTUEL</span>
+        <span id="score-display" class="score-value">0.0</span>
+      </div>
 
-    <div id="feedback" class="hidden"></div>
+      <button id="submit-btn" onclick="soumettre()">
+        VALIDER MES RESULTATS
+      </button>
+
+      <div id="feedback" class="hidden"></div>
+    </div>
   </div>
 
   <script type="module" src="app.js"></script>

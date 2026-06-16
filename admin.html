@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BBoulder &#8212; Admin</title>
+    <title>Bleau Boulder Session &#8212; Admin</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo">BBOULDER</div>
+            <div class="logo">BLEAU<span>.</span>BOULDER</div>
             <p class="subtitle">ESPACE JUGE</p>
             <button class="btn-small btn-outline" onclick="deconnexion()">DECONNEXION</button>
         </header>
 
-        <!-- GESTION DES PHASES -->
         <div class="section-title">PHASE EN COURS</div>
         <div class="card phase-card">
             <div id="phase-actuelle" class="phase-badge">Chargement...</div>
@@ -25,7 +24,6 @@
             </div>
         </div>
 
-        <!-- CREATION PARTICIPANT -->
         <div class="section-title">AJOUTER UN PARTICIPANT</div>
         <div class="card">
             <div class="form-row">
@@ -46,7 +44,6 @@
             <div id="create-feedback" class="hidden feedback"></div>
         </div>
 
-        <!-- LISTE DES PARTICIPANTS -->
         <div class="section-title">PARTICIPANTS</div>
         <div class="filter-row">
             <button class="btn-filter active" onclick="filtrer('tous', this)">TOUS</button>
@@ -56,7 +53,6 @@
         </div>
         <div id="participants-list"></div>
 
-        <!-- MODAL CORRECTION SCORE -->
         <div id="modal" class="modal hidden">
             <div class="modal-content card">
                 <div class="modal-title">MODIFIER LE SCORE</div>
