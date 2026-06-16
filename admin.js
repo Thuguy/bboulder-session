@@ -404,3 +404,4 @@ window.fermerModal = fermerModal;
 window.sauvegarderCorrection = sauvegarderCorrection;
 window.changeModalAttempts = changeModalAttempts;
 window.majScoreModal = majScoreModal;
+window.afficherParticipants = afficherParticipants;
