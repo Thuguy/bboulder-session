@@ -283,7 +283,20 @@ window.sauvegarderCorrection = async () => {
         }, { merge: true });
 
         fermerModal();
-
+        // Met a jour le participant localement sans recharger
+        const idx = tousLesParticipants.findIndex(p => p.id === participantAModifier.id);
+        if (idx !== -1) {
+            tousLesParticipants[idx].scores = tousLesParticipants[idx].scores || {};
+            tousLesParticipants[idx].scores[phaseActuelle] = {
+                blocs,
+                totalTops,
+                totalZones,
+                totalEssais,
+                score: parseFloat(score.toFixed(1)),
+                submitted: true
+            };
+            afficherParticipants();
+        }
     } catch (e) {
         console.error(e);
         alert("Erreur lors de la sauvegarde.");
