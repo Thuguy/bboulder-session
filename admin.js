@@ -194,7 +194,8 @@ window.ouvrirModal = async (userId) => {
         const bloc = scorePhase?.blocs?.find(b => b.id === i);
         const essais = bloc?.essais ?? 0;
         const zone = bloc?.zone ? "checked" : "";
-        const top = bloc?.top ? "checked" : "";
+        const top = (bloc?.top || bloc?.completed) ? "checked" : "";
+        const zone = bloc?.zone ? "checked" : "";
 
         html += `
       <div class="modal-bloc-row">
