@@ -8,7 +8,7 @@ if (!user) throw new Error("Non autorise");
 
 // Affiche les infos du participant
 document.getElementById("user-info").textContent =
-    user.prenom.toUpperCase() + " " + user.nom.toUpperCase() + " &#8212; " + user.categorie.toUpperCase();
+    user.prenom.toUpperCase() + " " + user.nom.toUpperCase();
 
 const NB_BLOCS = 20;
 
