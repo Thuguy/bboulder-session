@@ -35,12 +35,16 @@ header {
 
 .logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 3rem;
-    letter-spacing: 10px;
+    font-size: 2.2rem;
+    letter-spacing: 6px;
     text-transform: uppercase;
     color: #ffffff;
     line-height: 1;
 }
+    .logo {
+        word-break: break-word;
+        max-width: 100%;
+    }
 
     .logo span {
         color: #e3000f;
