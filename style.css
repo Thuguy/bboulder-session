@@ -23,15 +23,17 @@ body {
 /* HEADER */
 header {
     text-align: center;
-    padding: 32px 0 24px;
-    position: relative;
+    padding: 24px 0 20px;
 }
 
-    header .btn-small {
-        position: absolute;
-        right: 0;
-        top: 32px;
-    }
+.nav-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
 
 .logo {
     font-family: 'Bebas Neue', sans-serif;
