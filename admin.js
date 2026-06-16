@@ -321,6 +321,73 @@ window.fermerModal = () => {
     participantAModifier = null;
 };
 
+window.genererTestData = async () => {
+    const participants = [
+        // HOMMES
+        { prenom: "Pierre", nom: "Fissure", categorie: "homme" },
+        { prenom: "Rocky", nom: "Leboulder", categorie: "homme" },
+        { prenom: "Max", nom: "Grip", categorie: "homme" },
+        { prenom: "Kevin", nom: "Delafalaise", categorie: "homme" },
+        { prenom: "Dylan", nom: "Lacrique", categorie: "homme" },
+        { prenom: "Tom", nom: "Boulderak", categorie: "homme" },
+        { prenom: "Sam", nom: "Escalados", categorie: "homme" },
+        { prenom: "Jack", nom: "Crashpad", categorie: "homme" },
+        { prenom: "Ben", nom: "Lamagnet", categorie: "homme" },
+        { prenom: "Nico", nom: "Priseenmain", categorie: "homme" },
+        { prenom: "Alex", nom: "Delavertical", categorie: "homme" },
+        { prenom: "Hugo", nom: "Chalkboard", categorie: "homme" },
+        { prenom: "Marc", nom: "Sommet", categorie: "homme" },
+        { prenom: "Luc", nom: "Lacrux", categorie: "homme" },
+        { prenom: "Paul", nom: "Dedales", categorie: "homme" },
+        { prenom: "Chris", nom: "Magnesia", categorie: "homme" },
+        { prenom: "Fred", nom: "Lapierre", categorie: "homme" },
+        { prenom: "Greg", nom: "Toplevel", categorie: "homme" },
+        { prenom: "Rob", nom: "Highball", categorie: "homme" },
+        { prenom: "Dan", nom: "Blocmasters", categorie: "homme" },
+        // FEMMES
+        { prenom: "Emma", nom: "Lacrimpette", categorie: "femme" },
+        { prenom: "Lea", nom: "Delaparoi", categorie: "femme" },
+        { prenom: "Sara", nom: "Crashpadette", categorie: "femme" },
+        { prenom: "Julie", nom: "Lazone", categorie: "femme" },
+        { prenom: "Marie", nom: "Magnesia", categorie: "femme" },
+        { prenom: "Clara", nom: "Highballeuse", categorie: "femme" },
+        { prenom: "Nina", nom: "Lafalaise", categorie: "femme" },
+        { prenom: "Lucie", nom: "Delagrip", categorie: "femme" },
+        { prenom: "Jade", nom: "Blockeuse", categorie: "femme" },
+        { prenom: "Zoe", nom: "Sommetale", categorie: "femme" },
+        { prenom: "Alice", nom: "Lacrux", categorie: "femme" },
+        { prenom: "Chloe", nom: "Topzone", categorie: "femme" },
+        { prenom: "Manon", nom: "Lavertical", categorie: "femme" },
+        { prenom: "Lola", nom: "Priseenfleur", categorie: "femme" },
+        { prenom: "Camille", nom: "Delamontagne", categorie: "femme" },
+        { prenom: "Anais", nom: "Chalkette", categorie: "femme" },
+        { prenom: "Elisa", nom: "Boulderina", categorie: "femme" },
+        { prenom: "Oceane", nom: "Lapiton", categorie: "femme" },
+        { prenom: "Pauline", nom: "Grimpeuse", categorie: "femme" },
+        { prenom: "Marine", nom: "Lacaillou", categorie: "femme" },
+    ];
+
+    let count = 0;
+    for (const p of participants) {
+        const nombre = Math.floor(1000 + Math.random() * 9000);
+        const password = "BBS-" + nombre;
+        const userId = (p.prenom + "-" + p.nom).toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, "-");
+
+        await setDoc(doc(db, "users", userId), {
+            prenom: p.prenom,
+            nom: p.nom,
+            categorie: p.categorie,
+            role: "participant",
+            password,
+            submitted: false
+        });
+        count++;
+        console.log("Cree : " + p.prenom + " " + p.nom + " — " + password);
+    }
+    alert(count + " participants crees !");
+};
 window.deconnexion = deconnexion;
 window.changerPhase = changerPhase;
 window.creerParticipant = creerParticipant;
