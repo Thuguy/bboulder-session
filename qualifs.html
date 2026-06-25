@@ -17,20 +17,41 @@
             <div id="user-info" class="user-info"></div>
         </header>
 
+        <!-- Deja soumis -->
         <div id="already-submitted" class="hidden card">
             <p class="text-center">Tes resultats ont deja ete soumis. Contacte un juge si tu as une correction a faire.</p>
         </div>
 
-        <div id="form-container">
+        <!-- Non qualifie vague 2 -->
+        <div id="non-qualifie" class="hidden card">
+            <p class="text-center">Vague 1 terminee. Tu n'as pas realise les 10 tops necessaires pour acceder a la vague 2.</p>
+            <div class="score-preview" style="margin-top: 12px;">
+                <span class="label">TON SCORE</span>
+                <span id="score-final-v1" class="score-value">0.0</span>
+            </div>
+        </div>
+
+        <!-- Termine -->
+        <div id="termine" class="hidden card">
+            <p class="text-center">Bravo ! Tes resultats sont enregistres.</p>
+            <div class="score-preview" style="margin-top: 12px;">
+                <span class="label">SCORE TOTAL</span>
+                <span id="score-final-total" class="score-value">0.0</span>
+            </div>
+        </div>
+
+        <!-- Formulaire -->
+        <div id="form-container" class="hidden">
+            <div class="section-title" id="vague-label">VAGUE 1 &#8212; BLOCS 1 A 10</div>
             <div id="blocs-container"></div>
 
             <div class="score-preview card">
-                <span class="label">SCORE ACTUEL</span>
+                <span class="label">SCORE</span>
                 <span id="score-display" class="score-value">0.0</span>
             </div>
 
             <button id="submit-btn" onclick="soumettre()">
-                VALIDER MES RESULTATS
+                VALIDER VAGUE 1
             </button>
 
             <div id="feedback" class="hidden"></div>
