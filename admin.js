@@ -115,8 +115,7 @@ async function calculerQualifies(phaseSource, nbQualifies) {
   console.log("Qualifies hommes : " + hommes.length);
   console.log("Qualifies femmes : " + femmes.length);
 }
-
-function genererMotDePasse() {
+function genererMotDePasse(prenom, nom) {
     const p = prenom.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     const n = nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     const initiales = p[0].toUpperCase() + p[1].toLowerCase() + n[0].toUpperCase() + n[1].toLowerCase();
