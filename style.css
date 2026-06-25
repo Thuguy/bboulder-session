@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    background-color: #D4A96A;
+    background-color: #E8C87A;
     color: #2A1A10;
     padding: 16px;
     min-height: 100vh;
@@ -69,11 +69,11 @@ header {
 
 /* CARDS */
 .card {
-    background: #C49A5A;
+    background: #FAF6EE;
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 10px;
-    border: 1px solid #B08040;
+    border: 1px solid #C8A85A;
 }
 
 .text-center {
@@ -89,7 +89,7 @@ input[type="password"],
 select {
     width: 100%;
     padding: 12px;
-    background: #D4A96A;
+    background: #FAF6EE;
     border: 1px solid #4A3728;
     border-radius: 6px;
     color: #2A1A10;
@@ -282,7 +282,7 @@ select option {
     max-width: 400px;
     width: 100%;
     padding: 40px 24px;
-    background: #C49A5A;
+    background: #FAF6EE;
     border: 1px solid #4A3728;
 }
 
@@ -567,7 +567,7 @@ input:checked + .slider {
     width: 100%;
     max-width: 560px;
     margin: auto;
-    background: #C49A5A;
+    background: #FAF6EE;
 }
 
 .modal-title {
@@ -615,7 +615,7 @@ input:checked + .slider {
 table {
     width: 100%;
     border-collapse: collapse;
-    background: #C49A5A;
+    background: #FAF6EE;
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid #B08040;
