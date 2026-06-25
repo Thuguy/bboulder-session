@@ -37,15 +37,20 @@
                 <input type="text" id="new-prenom" placeholder="Prenom" />
                 <input type="text" id="new-nom" placeholder="Nom" />
             </div>
-            <div class="form-row">
-                <select id="new-categorie">
-                    <option value="homme">Homme</option>
-                    <option value="femme">Femme</option>
-                </select>
-                <select id="new-role">
-                    <option value="participant">Participant</option>
-                    <option value="juge">Juge</option>
-                </select>
+            <div class="toggle-group">
+                <div class="toggle-label">CATEGORIE</div>
+                <div class="toggle-buttons">
+                    <button class="btn-toggle active" id="toggle-homme" onclick="setCategorie('homme')">HOMME</button>
+                    <button class="btn-toggle" id="toggle-femme" onclick="setCategorie('femme')">FEMME</button>
+                </div>
+            </div>
+
+            <div class="toggle-group">
+                <div class="toggle-label">TYPE</div>
+                <div class="toggle-buttons">
+                    <button class="btn-toggle active" id="toggle-participant" onclick="setRole('participant')">PARTICIPANT</button>
+                    <button class="btn-toggle" id="toggle-juge" onclick="setRole('juge')">JUGE</button>
+                </div>
             </div>
             <button class="btn-full" onclick="creerParticipant()">CREER LE COMPTE</button>
             <div id="create-feedback" class="hidden feedback"></div>

@@ -120,8 +120,8 @@ async function calculerQualifies(phaseSource, nbQualifies) {
 window.creerParticipant = async () => {
     const prenom = document.getElementById("new-prenom").value.trim();
     const nom = document.getElementById("new-nom").value.trim();
-    const categorie = document.getElementById("new-categorie").value;
-    const role = document.getElementById("new-role").value;
+    const categorie = selectedCategorie;
+    const role = selectedRole;
     const feedback = document.getElementById("create-feedback");
 
     if (!prenom || !nom) {
@@ -434,6 +434,21 @@ window.genererTestData = async () => {
         console.log("Cree : " + p.prenom + " " + p.nom + " — " + password);
     }
     alert(count + " participants crees !");
+};
+
+let selectedCategorie = 'homme';
+let selectedRole = 'participant';
+
+window.setCategorie = (val) => {
+    selectedCategorie = val;
+    document.getElementById('toggle-homme').classList.toggle('active', val === 'homme');
+    document.getElementById('toggle-femme').classList.toggle('active', val === 'femme');
+};
+
+window.setRole = (val) => {
+    selectedRole = val;
+    document.getElementById('toggle-participant').classList.toggle('active', val === 'participant');
+    document.getElementById('toggle-juge').classList.toggle('active', val === 'juge');
 };
 window.deconnexion = deconnexion;
 window.changerPhase = changerPhase;

@@ -700,3 +700,39 @@ tr:last-child td {
         min-height: 40px;
     }
 }
+
+.toggle-group {
+    margin-bottom: 12px;
+}
+
+.toggle-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: #888888;
+    margin-bottom: 8px;
+}
+
+.toggle-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-toggle {
+    flex: 1;
+    padding: 12px;
+    background: #1a1a1a;
+    color: #888888;
+    border: 1px solid #333333;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .btn-toggle.active {
+        background: #e3000f;
+        color: #ffffff;
+        border-color: #e3000f;
+    }
