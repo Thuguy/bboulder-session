@@ -450,6 +450,41 @@ window.setRole = (val) => {
     document.getElementById('toggle-participant').classList.toggle('active', val === 'participant');
     document.getElementById('toggle-juge').classList.toggle('active', val === 'juge');
 };
+
+window.viderBDD = async () => {
+    const confirme = confirm("Supprimer tous les participants et scores sauf ton compte admin ?");
+    if (!confirme) return;
+
+    try {
+        const snapshot = await getDocs(collection(db, "users"));
+        const suppressions = [];
+
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            // Garde uniquement les juges et admins
+            if (data.role === "participant") {
+                suppressions.push(docSnap.id);
+            }
+        });
+
+        for (const id of suppressions) {
+            await setDoc(doc(db, "users", id), {}, { merge: false });
+            await setDoc(doc(db, "scores", id), {}, { merge: false });
+        }
+
+        // Supprime vraiment les docs
+        const { deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        for (const id of suppressions) {
+            await deleteDoc(doc(db, "users", id));
+            await deleteDoc(doc(db, "scores", id));
+        }
+
+        alert(suppressions.length + " participants supprimes. Juges et admins conserves.");
+    } catch (e) {
+        console.error(e);
+        alert("Erreur lors de la suppression.");
+    }
+};
 window.deconnexion = deconnexion;
 window.changerPhase = changerPhase;
 window.creerParticipant = creerParticipant;
