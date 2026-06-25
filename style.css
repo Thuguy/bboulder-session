@@ -700,39 +700,50 @@ tr:last-child td {
         min-height: 40px;
     }
 }
-
 .toggle-group {
-    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
 }
 
 .toggle-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     letter-spacing: 2px;
-    color: #888888;
-    margin-bottom: 8px;
+    color: #6B4C35;
+    text-transform: uppercase;
+    white-space: nowrap;
+    min-width: 80px;
 }
 
 .toggle-buttons {
     display: flex;
     gap: 8px;
+    flex: 1;
 }
 
 .btn-toggle {
     flex: 1;
-    padding: 12px;
-    background: #1a1a1a;
-    color: #888888;
-    border: 1px solid #333333;
+    padding: 10px;
+    background: #D4A96A;
+    color: #4A3728;
+    border: 1px solid #4A3728;
     border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 2px;
+    text-transform: uppercase;
     cursor: pointer;
     transition: all 0.2s;
 }
 
     .btn-toggle.active {
-        background: #e3000f;
-        color: #ffffff;
-        border-color: #e3000f;
+        background: #4A3728;
+        color: #D4A96A;
+        border-color: #4A3728;
+    }
+
+    .btn-toggle:hover {
+        background: #4A3728;
+        color: #D4A96A;
     }
