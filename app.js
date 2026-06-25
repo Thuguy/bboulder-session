@@ -73,7 +73,7 @@ function afficherVague(numero) {
     `;
         container.appendChild(card);
     }
-
+    restaurerBrouillon(numero);
     calculerScore(numero);
     document.getElementById("form-container").classList.remove("hidden");
     document.getElementById("already-submitted").classList.add("hidden");
@@ -105,6 +105,7 @@ window.toggleBloc = (id) => {
     const checked = document.getElementById(`check-${id}`).checked;
     document.getElementById(`attempts-row-${id}`).classList.toggle("hidden", !checked);
     calculerScore(window._vagueEnCours);
+    sauvegarderBrouillon(window._vagueEnCours); 
 };
 
 window.changeAttempts = (id, delta) => {
@@ -112,6 +113,7 @@ window.changeAttempts = (id, delta) => {
     const next = Math.max(1, parseInt(el.textContent) + delta);
     el.textContent = next;
     calculerScore(window._vagueEnCours);
+    sauvegarderBrouillon(window._vagueEnCours); 
 };
 
 function calculerScore(vague) {
@@ -182,6 +184,7 @@ window.soumettre = async () => {
         }
 
         await setDoc(scoreRef, updateData, { merge: true });
+        supprimerBrouillon(vague); 
         scoreData = updateData;
 
         if (vague === 1 && qualifieV2) {
@@ -214,5 +217,46 @@ window.soumettre = async () => {
         btn.textContent = "VALIDER VAGUE " + vague;
     }
 };
+// Sauvegarde automatique dans localStorage
+function sauvegarderBrouillon(vague) {
+    const debut = vague === 1 ? 1 : 11;
+    const fin = vague === 1 ? 10 : 20;
+    const brouillon = {};
 
+    for (let i = debut; i <= fin; i++) {
+        const checked = document.getElementById(`check-${i}`)?.checked;
+        const essais = parseInt(document.getElementById(`attempts-${i}`)?.textContent ?? 1);
+        brouillon[i] = { checked, essais };
+    }
+
+    localStorage.setItem(`brouillon_vague${vague}_${user.id}`, JSON.stringify(brouillon));
+}
+
+function restaurerBrouillon(vague) {
+    const raw = localStorage.getItem(`brouillon_vague${vague}_${user.id}`);
+    if (!raw) return;
+
+    const brouillon = JSON.parse(raw);
+    const debut = vague === 1 ? 1 : 11;
+    const fin = vague === 1 ? 10 : 20;
+
+    for (let i = debut; i <= fin; i++) {
+        const data = brouillon[i];
+        if (!data) continue;
+
+        const checkbox = document.getElementById(`check-${i}`);
+        const attemptsEl = document.getElementById(`attempts-${i}`);
+        const attemptsRow = document.getElementById(`attempts-row-${i}`);
+
+        if (checkbox) checkbox.checked = data.checked;
+        if (attemptsEl) attemptsEl.textContent = data.essais;
+        if (attemptsRow) attemptsRow.classList.toggle("hidden", !data.checked);
+    }
+
+    calculerScore(vague);
+}
+
+function supprimerBrouillon(vague) {
+    localStorage.removeItem(`brouillon_vague${vague}_${user.id}`);
+}
 init();
