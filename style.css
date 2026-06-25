@@ -23,20 +23,39 @@ header {
     text-align: center;
     padding: 28px 0 20px;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
     header .btn-small {
-        position: absolute;
-        right: 0;
-        top: 28px;
+        position: static;
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
     }
 
 .logo {
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: 900;
-    letter-spacing: 8px;
+    letter-spacing: 4px;
     text-transform: uppercase;
     color: #4A3728;
+    word-break: break-word;
+    text-align: center;
+}
+
+@media (min-width: 480px) {
+    .logo {
+        font-size: 2.2rem;
+        letter-spacing: 6px;
+    }
+}
+@media (min-width: 600px) {
+    .logo {
+        font-size: 2.6rem;
+        letter-spacing: 8px;
+    }
 }
 
 .subtitle {
