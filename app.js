@@ -194,6 +194,9 @@ window.soumettre = async () => {
             setTimeout(() => {
                 afficherVague(2);
                 document.getElementById("feedback").classList.add("hidden");
+                const btn = document.getElementById("submit-btn");
+                btn.disabled = false;
+                btn.textContent = "VALIDER VAGUE 2";
             }, 2500);
 
         } else if (vague === 1 && !qualifieV2) {
