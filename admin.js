@@ -131,7 +131,7 @@ window.creerParticipant = async () => {
         return;
     }
 
-    const password = genererMotDePasse();
+    const password = genererMotDePasse(prenom, nom);
     const userId = (prenom + "-" + nom).toLowerCase()
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/\s+/g, "-");
@@ -164,8 +164,10 @@ window.creerParticipant = async () => {
 };
 
 function genererMotDePasse() {
-    const nombre = Math.floor(1000 + Math.random() * 9000);
-    return "BBS-" + nombre;
+    const p = prenom.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const n = nom.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const initiales = p[0].toUpperCase() + p[1].toLowerCase() + n[0].toUpperCase() + n[1].toLowerCase();
+    return "bbs-" + initiales;
 }
 
 
@@ -416,8 +418,7 @@ window.genererTestData = async () => {
 
     let count = 0;
     for (const p of participants) {
-        const nombre = Math.floor(1000 + Math.random() * 9000);
-        const password = "BBS-" + nombre;
+        const password = genererMotDePasse(p.prenom, p.nom);
         const userId = (p.prenom + "-" + p.nom).toLowerCase()
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             .replace(/\s+/g, "-");
